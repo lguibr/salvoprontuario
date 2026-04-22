@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-nt-bg: #f4f5f0;
+  --color-nt-text: #2d332d;
+  --color-nt-sidebar: #eceddf;
+  --color-nt-active: #e1e5db;
+  --color-nt-primary: #5a6b5d;
+  --color-nt-border: #d8dcd0;
+  --color-nt-border-light: #f0f2ed;
+  --color-nt-paper: #fcfdfa;
+
+  --font-sans: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.dark {
+  --color-nt-bg: #1a1c19;
+  --color-nt-text: #e0e3e0;
+  --color-nt-sidebar: #222522;
+  --color-nt-active: #2c302c;
+  --color-nt-primary: #859a89;
+  --color-nt-border: #3b403b;
+  --color-nt-border-light: #2c302c;
+  --color-nt-paper: #1f211f;
+}
+
+body {
+  background-color: var(--color-nt-bg);
+  color: var(--color-nt-text);
+  font-family: var(--font-sans);
+}
+
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
