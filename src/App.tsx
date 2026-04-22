@@ -43,7 +43,7 @@ export default function App() {
           />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center h-full text-slate-400 bg-nt-bg/50 print:hidden">
-            <div className="p-8 bg-white rounded-2xl border border-nt-border shadow-card text-center max-w-sm">
+            <div className="p-8 bg-nt-paper rounded-2xl border border-nt-border shadow-card text-center max-w-sm">
               <div className="w-16 h-16 bg-nt-sidebar text-nt-primary rounded-full flex items-center justify-center mx-auto mb-5">
                  <UserCircle className="w-10 h-10 text-nt-primary" />
               </div>

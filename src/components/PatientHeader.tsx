@@ -38,7 +38,7 @@ export function PatientHeader({
   };
 
   return (
-    <div className="bg-white px-4 sm:px-8 py-4 sm:py-5 border-b border-nt-border z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 print:hidden">
+    <div className="bg-nt-paper px-4 sm:px-8 py-4 sm:py-5 border-b border-nt-border z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 print:hidden">
       <div className="flex items-center gap-4 sm:gap-6">
         <button 
           onClick={onBack}
@@ -93,7 +93,7 @@ export function PatientHeader({
          <button 
            onClick={onShowPreview}
            title="Visualizar Prontuário"
-           className="p-2 sm:px-4 sm:py-2 bg-white text-nt-text hover:bg-gray-50 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors uppercase tracking-widest shadow-sm border border-nt-border shrink-0"
+           className="p-2 sm:px-4 sm:py-2 bg-nt-paper text-nt-text hover:bg-gray-50 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors uppercase tracking-widest shadow-sm border border-nt-border shrink-0"
          >
            <Eye className="w-4 h-4" />
            <span className="hidden sm:inline">Preview</span>
@@ -102,7 +102,7 @@ export function PatientHeader({
          <button 
            onClick={onCopyAll}
            title="Copiar todas evoluções"
-           className="p-2 sm:px-4 sm:py-2 bg-white text-nt-text hover:bg-gray-50 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors uppercase tracking-widest shadow-sm border border-nt-border shrink-0"
+           className="p-2 sm:px-4 sm:py-2 bg-nt-paper text-nt-text hover:bg-gray-50 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors uppercase tracking-widest shadow-sm border border-nt-border shrink-0"
          >
            <Copy className="w-4 h-4" />
            <span className="hidden sm:inline">Copiar</span>
@@ -111,7 +111,7 @@ export function PatientHeader({
          <button 
            onClick={onExportDoc}
            title="Exportar documento Word"
-           className="p-2 sm:px-4 sm:py-2 bg-white text-nt-text hover:bg-gray-50 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors uppercase tracking-widest shadow-sm border border-nt-border shrink-0"
+           className="p-2 sm:px-4 sm:py-2 bg-nt-paper text-nt-text hover:bg-gray-50 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors uppercase tracking-widest shadow-sm border border-nt-border shrink-0"
          >
            <FileText className="w-4 h-4" />
            <span className="hidden sm:inline">.DOC</span>

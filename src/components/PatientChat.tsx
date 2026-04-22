@@ -58,7 +58,7 @@ export function PatientChat({ isOpen, onClose, patient, sessions, hooks }: Patie
         isOpen ? "translate-x-0" : "translate-x-full"
       )}
     >
-      <div className="p-5 border-b border-nt-border-light flex justify-between items-center bg-white shrink-0">
+      <div className="p-5 border-b border-nt-border-light flex justify-between items-center bg-nt-paper shrink-0">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-nt-primary" />
           <h3 className="font-bold text-nt-text">Visão Global do Paciente</h3>
@@ -81,21 +81,21 @@ export function PatientChat({ isOpen, onClose, patient, sessions, hooks }: Patie
              <span className="text-[10px] font-bold text-gray-400 mb-1 ml-1 uppercase tracking-wider">{m.role === 'user' ? 'Você' : 'Assistente IA'}</span>
              <div className={cn(
                "p-3 rounded-2xl text-sm leading-relaxed",
-               m.role === 'user' ? "bg-nt-primary text-white rounded-tr-sm" : "bg-white border border-nt-border text-nt-text shadow-sm rounded-tl-sm whitespace-pre-wrap"
+               m.role === 'user' ? "bg-nt-primary text-white rounded-tr-sm" : "bg-nt-paper border border-nt-border text-nt-text shadow-sm rounded-tl-sm whitespace-pre-wrap"
              )}>
                {m.content}
              </div>
           </div>
         ))}
         {isProcessing && (
-          <div className="self-start flex items-center p-3 rounded-2xl bg-white border border-nt-border text-nt-text shadow-sm rounded-tl-sm w-fit">
+          <div className="self-start flex items-center p-3 rounded-2xl bg-nt-paper border border-nt-border text-nt-text shadow-sm rounded-tl-sm w-fit">
             <Loader2 className="w-4 h-4 animate-spin opacity-50 mr-2" />
             <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Analisando histórico...</span>
           </div>
         )}
       </div>
 
-      <div className="p-4 bg-white border-t border-nt-border-light shrink-0">
+      <div className="p-4 bg-nt-paper border-t border-nt-border-light shrink-0">
         <div className="relative">
           <input 
             type="text" 

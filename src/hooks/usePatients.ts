@@ -51,6 +51,10 @@ export function usePatients() {
     return localStorage.getItem('prontuario_planPrompt') || DEFAULT_PLAN_PROMPT;
   });
 
+  const [psychologistName, setPsychologistName] = useState<string>(() => {
+    return localStorage.getItem('prontuario_psychologistName') || '';
+  });
+
   useEffect(() => {
     localStorage.setItem('prontuario_patients', JSON.stringify(patients));
   }, [patients]);
@@ -74,6 +78,10 @@ export function usePatients() {
   useEffect(() => {
     localStorage.setItem('prontuario_planPrompt', planPrompt);
   }, [planPrompt]);
+
+  useEffect(() => {
+    localStorage.setItem('prontuario_psychologistName', psychologistName);
+  }, [psychologistName]);
 
   const updateSystemPrompt = (prompt: string) => {
     setSystemPrompt(prompt);
@@ -215,6 +223,8 @@ export function usePatients() {
     updateComplaintPrompt: setComplaintPrompt,
     planPrompt,
     updatePlanPrompt: setPlanPrompt,
+    psychologistName,
+    updatePsychologistName: setPsychologistName,
     stampImage,
     updateStampImage: setStampImage,
   };

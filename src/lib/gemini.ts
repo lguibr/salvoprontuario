@@ -2,15 +2,20 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { Session, Patient, ChatMessage } from '../types';
 
 let ai: GoogleGenAI | null = null;
+let cachedKey: string | null = null;
 
 export function getGemini() {
-  if (!ai) {
-    const key = process.env.GEMINI_API_KEY;
-    if (!key) {
-      throw new Error('GEMINI_API_KEY environment variable is required');
-    }
-    ai = new GoogleGenAI({ apiKey: key });
+  const key = localStorage.getItem('prontuario_geminiApiKey') || import.meta.env?.VITE_GEMINI_API_KEY || '';
+  
+  if (!key) {
+    throw new Error('Chave da API do Google Gemini não encontrada. Configure-a nas suas configurações.');
   }
+
+  if (!ai || cachedKey !== key) {
+    ai = new GoogleGenAI({ apiKey: key });
+    cachedKey = key;
+  }
+  
   return ai;
 }
 

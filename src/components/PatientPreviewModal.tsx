@@ -8,15 +8,16 @@ interface PatientPreviewModalProps {
   patient: Patient;
   sessions: Session[];
   stampImage: string | null;
+  psychologistName: string;
   onClose: () => void;
   onExportDoc: () => void;
 }
 
-export function PatientPreviewModal({ patient, sessions, stampImage, onClose, onExportDoc }: PatientPreviewModalProps) {
+export function PatientPreviewModal({ patient, sessions, stampImage, psychologistName, onClose, onExportDoc }: PatientPreviewModalProps) {
   return (
     <div className="absolute inset-0 bg-black/40 z-50 flex items-center justify-center p-0 sm:p-4 print:hidden backdrop-blur-sm">
-      <div className="bg-white w-full h-full sm:h-auto sm:max-w-4xl sm:rounded-2xl shadow-2xl border-0 sm:border border-nt-border overflow-hidden flex flex-col max-h-screen sm:max-h-[90vh]">
-        <div className="p-4 sm:p-5 border-b border-nt-border flex justify-between items-center bg-white shrink-0">
+      <div className="bg-nt-paper w-full h-full sm:h-auto sm:max-w-4xl sm:rounded-2xl shadow-2xl border-0 sm:border border-nt-border overflow-hidden flex flex-col max-h-screen sm:max-h-[90vh]">
+        <div className="p-4 sm:p-5 border-b border-nt-border flex justify-between items-center bg-nt-paper shrink-0">
           <h3 className="font-bold text-nt-text flex items-center gap-2">
             <Eye className="w-5 h-5 text-nt-primary" /> Visualizar Prontuário Final
           </h3>
@@ -55,12 +56,13 @@ export function PatientPreviewModal({ patient, sessions, stampImage, onClose, on
           </div>
 
           <div className="mt-16 text-right text-sm">
-            <p>Gerado em {format(new Date(), "dd/MM/yy", { locale: ptBR })}</p>
+            {psychologistName && <p className="font-bold">{psychologistName}</p>}
+            <p>Belo Horizonte, Minas Gerais Brasil {format(new Date(), "dd/MM/yy", { locale: ptBR })}</p>
           </div>
 
           {stampImage && (
-            <div className="mt-8 flex justify-center sm:justify-end">
-              <img src={stampImage} alt="Carimbo" className="max-h-[120px] sm:max-h-[150px] object-contain" />
+            <div className="mt-4 flex justify-end">
+              <img src={stampImage} alt="Carimbo" className="max-h-[100px] sm:max-h-[120px] object-contain" />
             </div>
           )}
         </div>

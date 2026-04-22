@@ -6,9 +6,11 @@ import { ptBR } from 'date-fns/locale';
 interface PatientPrintTemplateProps {
   patient: Patient;
   sessions: Session[];
+  stampImage: string | null;
+  psychologistName: string;
 }
 
-export function PatientPrintTemplate({ patient, sessions }: PatientPrintTemplateProps) {
+export function PatientPrintTemplate({ patient, sessions, stampImage, psychologistName }: PatientPrintTemplateProps) {
   return (
     <div className="hidden print:block p-8 font-serif text-black max-w-[21cm] mx-auto bg-white min-h-screen">
       <h1 className="text-xl font-bold text-center mb-10">PRONTUÁRIO PSICOLÓGICO</h1>
@@ -40,8 +42,15 @@ export function PatientPrintTemplate({ patient, sessions }: PatientPrintTemplate
       </div>
 
       <div className="mt-16 text-right text-sm">
-        <p>Belo Horizonte, {format(new Date(), "dd/MM/yy", { locale: ptBR })}.</p>
+        {psychologistName && <p className="font-bold">{psychologistName}</p>}
+        <p>Belo Horizonte, Minas Gerais Brasil {format(new Date(), "dd/MM/yy", { locale: ptBR })}</p>
       </div>
+
+      {stampImage && (
+        <div className="mt-4 flex justify-end">
+          <img src={stampImage} alt="Carimbo" className="max-h-[100px] sm:max-h-[120px] object-contain" />
+        </div>
+      )}
     </div>
   );
 }

@@ -22,7 +22,7 @@ interface PatientViewProps {
 }
 
 export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
-  const { getSessionsForPatient, addMultipleSessions, updateSession, updatePatient, deletePatient, systemPrompt, updateSystemPrompt, complaintPrompt, planPrompt, updateComplaintPrompt, updatePlanPrompt, stampImage, updateStampImage, deleteAllSessions } = hooks;
+  const { getSessionsForPatient, addMultipleSessions, updateSession, updatePatient, deletePatient, systemPrompt, updateSystemPrompt, complaintPrompt, planPrompt, updateComplaintPrompt, updatePlanPrompt, stampImage, updateStampImage, deleteAllSessions, psychologistName, updatePsychologistName } = hooks;
   const sessions = getSessionsForPatient(patient.id);
   const [chatOpen, setChatOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -108,11 +108,14 @@ export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
        html += `<p>${s.clinicalText.replace(/\\n/g, '<br/>')}</p><br/>`;
     });
 
-    html += `<p style="text-align: right; margin-top: 40px;">Gerado em ${format(new Date(), "dd/MM/yy", { locale: ptBR })}.</p>`;
+    html += `<div style="text-align: right; margin-top: 40px; font-size: 14px;">`;
+    if (psychologistName) html += `<strong>${psychologistName}</strong><br/>`;
+    html += `Belo Horizonte, Minas Gerais Brasil ${format(new Date(), "dd/MM/yy", { locale: ptBR })}<br/>`;
+    html += `</div>`;
 
     if (stampImage) {
-      html += `<div style="text-align: center; margin-top: 80px;">
-                 <img src="${stampImage}" style="max-height: 150px; max-width: 250px;" />
+      html += `<div style="text-align: right; margin-top: 20px;">
+                 <img src="${stampImage}" style="max-height: 100px; max-width: 250px;" />
                </div>`;
     }
 
@@ -149,7 +152,9 @@ export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
        text += `${s.clinicalText}\\n\\n`;
     });
     
-    text += `\\n${format(new Date(), "dd/MM/yy", { locale: ptBR })}.`;
+    text += `\\n`;
+    if (psychologistName) text += `${psychologistName}\\n`;
+    text += `Belo Horizonte, Minas Gerais Brasil ${format(new Date(), "dd/MM/yy", { locale: ptBR })}`;
 
     try {
       await navigator.clipboard.writeText(text);
@@ -202,6 +207,8 @@ export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
           setTempPlanPrompt={setTempPlanPrompt}
           stampImage={stampImage}
           updateStampImage={updateStampImage}
+          psychologistName={psychologistName}
+          setPsychologistName={updatePsychologistName}
         />
       )}
 
@@ -210,12 +217,13 @@ export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
           patient={patient}
           sessions={sessions}
           stampImage={stampImage}
+          psychologistName={psychologistName}
           onClose={() => setShowPreviewModal(false)}
           onExportDoc={handleExportDoc}
         />
       )}
 
-      <PatientPrintTemplate patient={patient} sessions={sessions} />
+      <PatientPrintTemplate patient={patient} sessions={sessions} stampImage={stampImage} psychologistName={psychologistName} />
 
       <div className="flex-1 overflow-y-auto w-full scroll-hide relative print:hidden">
         <div className="max-w-5xl mx-auto px-4 py-8 sm:px-8 flex flex-col gap-6">
@@ -256,7 +264,7 @@ export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
             </div>
             
             {sessions.length === 0 ? (
-              <div className="text-center py-12 bg-white border border-nt-border border-dashed rounded-2xl opacity-60">
+              <div className="text-center py-12 bg-nt-paper border border-nt-border border-dashed rounded-2xl opacity-60">
                 <Clock className="w-10 h-10 text-gray-400 mx-auto mb-3" />
                 <h4 className="text-nt-text font-bold text-sm">Nenhuma sessão agendada</h4>
                 <p className="text-gray-500 text-xs mt-1 px-4 text-center">Gere datas para começar a preencher os prontuários deste paciente.</p>

@@ -41,7 +41,7 @@ export function PatientGlobalData({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-nt-border shadow-sm overflow-hidden transition-all duration-300">
+    <div className="bg-nt-paper rounded-2xl border border-nt-border shadow-sm overflow-hidden transition-all duration-300">
       <button 
         onClick={() => setShowGlobalData(!showGlobalData)}
         className="w-full px-4 sm:px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
@@ -83,7 +83,7 @@ export function PatientGlobalData({
                 placeholder="Ex: segundas 11:30" 
                 value={patient.scheduleInfo || ''}
                 onChange={e => updatePatient(patient.id, { scheduleInfo: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-nt-border rounded-lg bg-white focus:outline-none focus:border-nt-primary"
+                className="w-full px-3 py-2 text-sm border border-nt-border rounded-lg bg-nt-paper focus:outline-none focus:border-nt-primary"
               />
             </div>
           </div>
@@ -106,7 +106,7 @@ export function PatientGlobalData({
               value={patient.complaint || ''}
               onChange={e => updatePatient(patient.id, { complaint: e.target.value })}
               placeholder="Resumo da demanda e queixa inicial..."
-              className="w-full px-3 py-2 text-sm border border-nt-border rounded-t-lg bg-white min-h-[120px] resize-none focus:outline-none focus:border-nt-primary"
+              className="w-full px-3 py-2 text-sm border border-nt-border rounded-t-lg bg-nt-paper min-h-[120px] resize-none focus:outline-none focus:border-nt-primary"
             />
             <div className="flex border border-t-0 border-nt-border rounded-b-lg bg-[#f0f2en] focus-within:ring-1 focus-within:ring-nt-primary overflow-hidden">
               <input 
@@ -145,7 +145,7 @@ export function PatientGlobalData({
               value={patient.therapeuticPlan || ''}
               onChange={e => updatePatient(patient.id, { therapeuticPlan: e.target.value })}
               placeholder="Rascunho do plano de tratamento..."
-              className="w-full px-3 py-2 text-sm border border-nt-border rounded-t-lg bg-white min-h-[120px] resize-none focus:outline-none focus:border-nt-primary"
+              className="w-full px-3 py-2 text-sm border border-nt-border rounded-t-lg bg-nt-paper min-h-[120px] resize-none focus:outline-none focus:border-nt-primary"
             />
             <div className="flex border border-t-0 border-nt-border rounded-b-lg bg-[#f0f2en] focus-within:ring-1 focus-within:ring-nt-primary overflow-hidden">
               <input 

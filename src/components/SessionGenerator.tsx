@@ -36,7 +36,7 @@ export function SessionGenerator({ onGenerate }: { onGenerate: (timestamps: numb
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-nt-border shadow-card mb-8">
+    <div className="bg-nt-paper p-6 rounded-xl border border-nt-border shadow-card mb-8">
       <h3 className="text-sm font-bold flex items-center gap-2 mb-4 text-nt-text">Gerar agenda de consultas</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">

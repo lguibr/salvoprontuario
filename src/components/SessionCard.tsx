@@ -183,7 +183,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({ session, onUpdate, hoo
       <div className={cn("grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 items-stretch print:block print:w-full", session.isAbsent && "opacity-60")}>
         {/* Left Col: Draft */}
         <div className={cn(
-          "flex flex-col h-full bg-white rounded-2xl border border-nt-border overflow-hidden shadow-card print:hidden",
+          "flex flex-col h-full bg-nt-paper rounded-2xl border border-nt-border overflow-hidden shadow-card print:hidden",
           session.isAbsent && "pointer-events-none"
         )}>
             <div className="px-3 py-2 border-b border-nt-border-light flex justify-between items-center bg-nt-paper">
@@ -200,7 +200,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({ session, onUpdate, hoo
               onChange={(e) => setDraft(e.target.value)}
               onBlur={handleSaveDraft}
               placeholder="Digite os pontos chaves da sessão aqui... Ex: Paciente relatou melhora..."
-              className="flex-1 p-3 text-xs md:text-sm leading-relaxed text-[#4a5d4e] min-h-[60px] md:min-h-[80px] resize-none outline-none bg-white focus:bg-nt-paper transition-colors"
+              className="flex-1 p-3 text-xs md:text-sm leading-relaxed text-[#4a5d4e] min-h-[60px] md:min-h-[80px] resize-none outline-none bg-nt-paper focus:bg-nt-paper transition-colors"
               disabled={session.isAbsent}
             />
             
@@ -224,7 +224,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({ session, onUpdate, hoo
           "flex flex-col h-full rounded-2xl overflow-hidden border-2 transition-all duration-500 min-h-[auto] md:min-h-[100px] print:block print:w-full print:border-none print:shadow-none print:min-h-0",
           (session.status === 'completed' || isElaborating || session.clinicalText) 
             ? (session.isAbsent ? "bg-red-50 text-red-700 border-red-200" : "bg-nt-primary text-white shadow-lg border-white/20 print:bg-white print:text-black") 
-            : "border-dashed border-nt-border bg-white print:hidden"
+            : "border-dashed border-nt-border bg-nt-paper print:hidden"
         )}>
           {(session.status === 'completed' || isElaborating || session.clinicalText) ? (
             <>
@@ -333,7 +333,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({ session, onUpdate, hoo
                     <button 
                       onClick={handleRefine} 
                       disabled={!chatMsg.trim() || isChatting} 
-                      className="p-1.5 bg-white text-nt-primary rounded-full hover:bg-white/90 transition-colors disabled:opacity-50"
+                      className="p-1.5 bg-nt-paper text-nt-primary rounded-full hover:bg-white/90 transition-colors disabled:opacity-50"
                     >
                       {isChatting ? <Loader2 className="w-3 h-3 animate-spin"/> : <Send className="w-3 h-3"/>}
                     </button>

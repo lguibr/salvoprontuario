@@ -83,7 +83,7 @@ export function PatientRegistrationModal({ onClose, onSave }: PatientRegistratio
       <div className="bg-nt-bg w-full max-w-2xl rounded-2xl shadow-xl flex flex-col max-h-[90vh]">
         
         {/* Header */}
-        <div className="p-5 border-b border-nt-border bg-white rounded-t-2xl flex justify-between items-center shrink-0">
+        <div className="p-5 border-b border-nt-border bg-nt-paper rounded-t-2xl flex justify-between items-center shrink-0">
           <h2 className="text-xl font-bold font-serif flex items-center gap-2 text-nt-text">
             <User className="w-5 h-5 text-nt-primary" />
             Novo Paciente
@@ -104,7 +104,7 @@ export function PatientRegistrationModal({ onClose, onSave }: PatientRegistratio
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="Ex: Valquíria Carla de Sena Pereira"
-                className="w-full px-4 py-3 bg-white border border-nt-border rounded-xl focus:border-nt-primary focus:outline-none focus:ring-1 focus:ring-nt-primary transition-all text-sm font-medium"
+                className="w-full px-4 py-3 bg-nt-paper border border-nt-border rounded-xl focus:border-nt-primary focus:outline-none focus:ring-1 focus:ring-nt-primary transition-all text-sm font-medium"
               />
             </div>
             
@@ -143,7 +143,7 @@ export function PatientRegistrationModal({ onClose, onSave }: PatientRegistratio
                 <select 
                   value={sessionTime}
                   onChange={e => setSessionTime(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-nt-border rounded-lg focus:border-nt-primary focus:outline-none text-sm appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-nt-paper border border-nt-border rounded-lg focus:border-nt-primary focus:outline-none text-sm appearance-none cursor-pointer"
                 >
                   {Array.from({length: 48}).map((_, i) => {
                     const h = Math.floor(i / 2).toString().padStart(2, '0');
@@ -162,7 +162,7 @@ export function PatientRegistrationModal({ onClose, onSave }: PatientRegistratio
                     key={idx}
                     type="button"
                     onClick={() => toggleDay(idx)}
-                    className={`w-10 h-10 rounded-full border text-xs font-bold transition-all ${daysOfWeek.includes(idx) ? 'bg-nt-primary text-white border-nt-primary shadow-sm' : 'bg-white text-gray-500 border-nt-border hover:bg-gray-50'}`}
+                    className={`w-10 h-10 rounded-full border text-xs font-bold transition-all ${daysOfWeek.includes(idx) ? 'bg-nt-primary text-white border-nt-primary shadow-sm' : 'bg-nt-paper text-gray-500 border-nt-border hover:bg-gray-50'}`}
                   >
                     {label}
                   </button>
@@ -178,7 +178,7 @@ export function PatientRegistrationModal({ onClose, onSave }: PatientRegistratio
                   value={complaint}
                   onChange={e => setComplaint(e.target.value)}
                   placeholder="Resumo do caso..."
-                  className="w-full p-4 bg-white border border-nt-border rounded-xl resize-none min-h-[100px] text-sm focus:border-nt-primary focus:outline-none transition-colors"
+                  className="w-full p-4 bg-nt-paper border border-nt-border rounded-xl resize-none min-h-[100px] text-sm focus:border-nt-primary focus:outline-none transition-colors"
                 />
              </div>
              <div>
@@ -187,7 +187,7 @@ export function PatientRegistrationModal({ onClose, onSave }: PatientRegistratio
                   value={plan}
                   onChange={e => setPlan(e.target.value)}
                   placeholder="Estratégias de tratamento..."
-                  className="w-full p-4 bg-white border border-nt-border rounded-xl resize-none min-h-[100px] text-sm focus:border-nt-primary focus:outline-none transition-colors"
+                  className="w-full p-4 bg-nt-paper border border-nt-border rounded-xl resize-none min-h-[100px] text-sm focus:border-nt-primary focus:outline-none transition-colors"
                 />
              </div>
           </div>
@@ -195,7 +195,7 @@ export function PatientRegistrationModal({ onClose, onSave }: PatientRegistratio
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-nt-border bg-white rounded-b-2xl flex justify-end gap-3 shrink-0">
+        <div className="p-5 border-t border-nt-border bg-nt-paper rounded-b-2xl flex justify-end gap-3 shrink-0">
           <button 
             onClick={onClose}
             className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gray-800 transition-colors"

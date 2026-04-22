@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { usePatients } from '../hooks/usePatients';
-import { UserPlus, UserCircle, Search, Moon, Sun } from 'lucide-react';
+import { UserPlus, UserCircle, Search, Moon, Sun, Settings } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Patient } from '../types';
 import { PatientRegistrationModal } from './PatientRegistrationModal';
+import { AppSettingsModal } from './AppSettingsModal';
 
 interface SidebarProps {
   hooks: ReturnType<typeof usePatients>;
@@ -14,6 +15,7 @@ interface SidebarProps {
 export function Sidebar({ hooks, selectedPatientId, onSelectPatient }: SidebarProps) {
   const { patients, addPatient } = hooks;
   const [showModal, setShowModal] = useState(false);
+  const [showAppSettings, setShowAppSettings] = useState(false);
   const [search, setSearch] = useState('');
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
   
@@ -46,12 +48,22 @@ export function Sidebar({ hooks, selectedPatientId, onSelectPatient }: SidebarPr
             </h1>
             <p className="text-xs font-medium mt-1 opacity-70 text-nt-text">Evoluções Clínicas via Gemini AI</p>
           </div>
-          <button 
-            onClick={toggleTheme}
-            className="p-2 text-nt-text hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors"
-          >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-1">
+            <button 
+              onClick={() => setShowAppSettings(true)}
+              title="Configurações (API Key)"
+              className="p-2 text-nt-text hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={toggleTheme}
+              title="Alternar Tema"
+              className="p-2 text-nt-text hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
         <div className="relative">
@@ -61,13 +73,13 @@ export function Sidebar({ hooks, selectedPatientId, onSelectPatient }: SidebarPr
             placeholder="Buscar paciente..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white rounded-full pl-9 pr-4 py-2 text-sm border-none ring-1 ring-black/5 focus:outline-none focus:ring-1 focus:ring-nt-primary transition-colors"
+            className="w-full bg-nt-paper rounded-full pl-9 pr-4 py-2 text-sm border-none ring-1 ring-black/5 focus:outline-none focus:ring-1 focus:ring-nt-primary transition-colors"
           />
         </div>
 
         <button 
           onClick={() => setShowModal(true)}
-          className="w-full py-2 bg-white rounded-lg text-sm font-medium border border-[#b8c0b0] hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors uppercase tracking-wider text-xs"
+          className="w-full py-2 bg-nt-paper rounded-lg text-sm font-medium border border-[#b8c0b0] hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors uppercase tracking-wider text-xs"
         >
           <UserPlus className="w-4 h-4" />
           <span className="font-bold">Novo Paciente</span>
@@ -104,7 +116,7 @@ export function Sidebar({ hooks, selectedPatientId, onSelectPatient }: SidebarPr
                   >
                     <div className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 transition-colors",
-                      selectedPatientId === p.id ? "bg-white text-nt-primary" : "bg-nt-border text-nt-text"
+                      selectedPatientId === p.id ? "bg-nt-paper text-nt-primary" : "bg-nt-border text-nt-text"
                     )}>
                       {p.name.charAt(0).toUpperCase()}
                     </div>
@@ -122,6 +134,10 @@ export function Sidebar({ hooks, selectedPatientId, onSelectPatient }: SidebarPr
           onClose={() => setShowModal(false)}
           onSave={handleAddPatient}
         />
+      )}
+
+      {showAppSettings && (
+        <AppSettingsModal onClose={() => setShowAppSettings(false)} />
       )}
     </div>
   );
