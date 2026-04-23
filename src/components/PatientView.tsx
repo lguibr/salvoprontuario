@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { usePatients } from '../hooks/usePatients';
 import { SessionCard } from './SessionCard';
 import { SessionGenerator } from './SessionGenerator';
@@ -23,7 +23,7 @@ interface PatientViewProps {
 
 export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
   const { getSessionsForPatient, addMultipleSessions, updateSession, updatePatient, deletePatient, systemPrompt, updateSystemPrompt, complaintPrompt, planPrompt, updateComplaintPrompt, updatePlanPrompt, stampImage, updateStampImage, deleteAllSessions, psychologistName, updatePsychologistName } = hooks;
-  const sessions = getSessionsForPatient(patient.id);
+  const sessions = useMemo(() => getSessionsForPatient(patient.id), [getSessionsForPatient, patient.id]);
   const [chatOpen, setChatOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -271,7 +271,7 @@ export function PatientView({ patient, onBack, hooks }: PatientViewProps) {
               </div>
             ) : (
               <div className="space-y-3 pb-8">
-                {sessions.sort((a,b) => a.datetime - b.datetime).map(session => (
+                {sessions.map(session => (
                   <SessionCard 
                     key={session.id} 
                     session={session} 

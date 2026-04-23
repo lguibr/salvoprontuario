@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Patient, Session } from '../types';
 
@@ -123,11 +123,11 @@ export function usePatients() {
     setSessions(current => current.filter(s => s.patientId !== patientId));
   };
 
-  const getSessionsForPatient = (patientId: string) => {
+  const getSessionsForPatient = useCallback((patientId: string) => {
     return sessions
       .filter((s) => s.patientId === patientId)
       .sort((a, b) => a.datetime - b.datetime);
-  };
+  }, [sessions]);
 
   const addSession = (patientId: string, timestamp: number) => {
     const newSession: Session = {
