@@ -1,20 +1,48 @@
-import React, { useState } from 'react';
-import { Settings, X, Key, ShieldAlert } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Settings, X, Key, ShieldAlert, Lock } from 'lucide-react';
+import { encryptData, decryptData } from '../lib/crypto';
 
 interface AppSettingsModalProps {
   onClose: () => void;
 }
 
 export function AppSettingsModal({ onClose }: AppSettingsModalProps) {
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('prontuario_geminiApiKey') || '');
+  const [apiKey, setApiKey] = useState('');
+  const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
-    localStorage.setItem('prontuario_geminiApiKey', apiKey.trim());
-    setSaved(true);
-    setTimeout(() => {
-      onClose();
-    }, 1500);
+  useEffect(() => {
+    const loadKey = async () => {
+      const storedKey = localStorage.getItem('prontuario_geminiApiKey');
+      if (storedKey) {
+        if (storedKey.startsWith('AIza')) {
+          setApiKey(storedKey);
+        } else {
+          try {
+            const decrypted = await decryptData(storedKey);
+            setApiKey(decrypted);
+          } catch (e) {
+            console.error('Failed to decrypt API key:', e);
+          }
+        }
+      }
+      setLoading(false);
+    };
+    loadKey();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const encrypted = await encryptData(apiKey.trim());
+      localStorage.setItem('prontuario_geminiApiKey', encrypted);
+      setSaved(true);
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+    } catch (e) {
+      console.error('Failed to save API key:', e);
+      alert('Erro ao salvar a chave de forma segura.');
+    }
   };
 
   return (
@@ -39,11 +67,17 @@ export function AppSettingsModal({ onClose }: AppSettingsModalProps) {
             </p>
             <input 
               type="password"
-              placeholder="AIzaSy..."
+              placeholder={loading ? "Carregando..." : "AIzaSy..."}
+              disabled={loading}
               value={apiKey}
               onChange={e => setApiKey(e.target.value)}
-              className="w-full px-4 py-3 bg-nt-paper border border-nt-border rounded-xl focus:border-nt-primary focus:outline-none focus:ring-1 focus:ring-nt-primary transition-all text-sm font-mono text-nt-text"
+              className="w-full px-4 py-3 bg-nt-paper border border-nt-border rounded-xl focus:border-nt-primary focus:outline-none focus:ring-1 focus:ring-nt-primary transition-all text-sm font-mono text-nt-text disabled:opacity-50"
             />
+          </div>
+
+          <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 p-4 rounded-xl text-xs flex gap-3 items-start border border-blue-200 dark:border-blue-900/50">
+            <Lock className="w-5 h-5 shrink-0" />
+            <p>Sua chave é criptografada localmente usando a Web Crypto API antes de ser salva no navegador, aumentando a segurança contra acessos não autorizados aos dados locais.</p>
           </div>
 
           <div className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 p-4 rounded-xl text-xs flex gap-3 items-start border border-yellow-200 dark:border-yellow-900/50">
