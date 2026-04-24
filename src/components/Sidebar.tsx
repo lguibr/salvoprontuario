@@ -5,6 +5,8 @@ import { cn } from '../lib/utils';
 import { Patient } from '../types';
 import { PatientRegistrationModal } from './PatientRegistrationModal';
 import { AppSettingsModal } from './AppSettingsModal';
+import localforage from 'localforage';
+import logo from '../../logo.png';
 
 interface SidebarProps {
   hooks: ReturnType<typeof usePatients>;
@@ -19,10 +21,10 @@ export function Sidebar({ hooks, selectedPatientId, onSelectPatient }: SidebarPr
   const [search, setSearch] = useState('');
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
   
-  const toggleTheme = () => {
+  const toggleTheme = async () => {
     const isDarkMode = document.documentElement.classList.toggle('dark');
     setIsDark(isDarkMode);
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    await localforage.setItem('theme', isDarkMode ? 'dark' : 'light');
   };
 
   const handleAddPatient = (details: Partial<Patient> & { name: string }, timestamps: number[]) => {
@@ -44,7 +46,7 @@ export function Sidebar({ hooks, selectedPatientId, onSelectPatient }: SidebarPr
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-nt-text flex items-center gap-2">
-              SalvoProntuário
+              <img src={logo} alt="SalvoProntuário Logo" className="h-8 w-auto mix-blend-multiply dark:mix-blend-normal rounded" />
             </h1>
             <p className="text-xs font-medium mt-1 opacity-70 text-nt-text">Evoluções Clínicas via Gemini AI</p>
           </div>

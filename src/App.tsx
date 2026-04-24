@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { PatientView } from './components/PatientView';
 import { usePatients } from './hooks/usePatients';
-import { UserCircle } from 'lucide-react';
+import { UserCircle, Loader2 } from 'lucide-react';
+import localforage from 'localforage';
 
 export default function App() {
   const patientHooks = usePatients();
@@ -12,11 +13,31 @@ export default function App() {
     ? patientHooks.patients.find(p => p.id === selectedPatientId) 
     : null;
 
-  React.useEffect(() => {
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        let theme = await localforage.getItem('theme');
+        if (!theme) {
+          theme = localStorage.getItem('theme');
+          if (theme) await localforage.setItem('theme', theme);
+        }
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (err) {
+        console.error("Error loading theme:", err);
+      }
+    };
+    loadTheme();
   }, []);
+
+  if (!patientHooks.isLoaded) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-nt-bg text-nt-primary">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen w-full bg-nt-bg overflow-hidden font-sans text-nt-text print:bg-white print:h-auto print:overflow-visible">

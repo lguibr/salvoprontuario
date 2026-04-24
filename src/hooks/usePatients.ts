@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Patient, Session } from '../types';
+import localforage from 'localforage';
 
 const DEFAULT_SYSTEM_PROMPT = `Você é um psiquiatra/psicólogo clńico sênior estruturando evoluções clínicas. 
 Por favor, transforme o rascunho da sessão a seguir em uma evolução clínica profissional, técnica e objetiva.
@@ -23,73 +24,132 @@ Baseado na queixa inicial e nas evoluções enviadas (se houver), redija um plan
 Retorne EXCLUSIVAMENTE o texto clínico para o plano, sem saudações ou comentários.`;
 
 export function usePatients() {
-  const [patients, setPatients] = useState<Patient[]>(() => {
-    const saved = localStorage.getItem('prontuario_patients');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [sessions, setSessions] = useState<Session[]>(() => {
-    const saved = localStorage.getItem('prontuario_sessions');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [systemPrompt, setSystemPrompt] = useState<string>(() => {
-    const saved = localStorage.getItem('prontuario_systemPrompt');
-    return saved || DEFAULT_SYSTEM_PROMPT;
-  });
-
-  const [globalSystemPrompt, setGlobalSystemPrompt] = useState<string>(() => {
-    const saved = localStorage.getItem('prontuario_globalSystemPrompt');
-    return saved || DEFAULT_GLOBAL_PROMPT;
-  });
-
-  const [complaintPrompt, setComplaintPrompt] = useState<string>(() => {
-    return localStorage.getItem('prontuario_complaintPrompt') || DEFAULT_COMPLAINT_PROMPT;
-  });
-
-  const [planPrompt, setPlanPrompt] = useState<string>(() => {
-    return localStorage.getItem('prontuario_planPrompt') || DEFAULT_PLAN_PROMPT;
-  });
-
-  const [psychologistName, setPsychologistName] = useState<string>(() => {
-    return localStorage.getItem('prontuario_psychologistName') || '';
-  });
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [systemPrompt, setSystemPrompt] = useState<string>(DEFAULT_SYSTEM_PROMPT);
+  const [globalSystemPrompt, setGlobalSystemPrompt] = useState<string>(DEFAULT_GLOBAL_PROMPT);
+  const [complaintPrompt, setComplaintPrompt] = useState<string>(DEFAULT_COMPLAINT_PROMPT);
+  const [planPrompt, setPlanPrompt] = useState<string>(DEFAULT_PLAN_PROMPT);
+  const [psychologistName, setPsychologistName] = useState<string>('');
+  const [stampImage, setStampImage] = useState<string | null>(null);
 
   useEffect(() => {
-    localStorage.setItem('prontuario_patients', JSON.stringify(patients));
-  }, [patients]);
+    let mounted = true;
+    const loadData = async () => {
+      try {
+        let savedPatients = await localforage.getItem<Patient[]>('prontuario_patients');
+        if (!savedPatients) {
+          const legacy = localStorage.getItem('prontuario_patients');
+          if (legacy) {
+            savedPatients = JSON.parse(legacy);
+            await localforage.setItem('prontuario_patients', savedPatients);
+          }
+        }
+        if (mounted && savedPatients) setPatients(savedPatients);
+
+        let savedSessions = await localforage.getItem<Session[]>('prontuario_sessions');
+        if (!savedSessions) {
+          const legacy = localStorage.getItem('prontuario_sessions');
+          if (legacy) {
+            savedSessions = JSON.parse(legacy);
+            await localforage.setItem('prontuario_sessions', savedSessions);
+          }
+        }
+        if (mounted && savedSessions) setSessions(savedSessions);
+
+        let sPrompt = await localforage.getItem<string>('prontuario_systemPrompt');
+        if (!sPrompt) {
+          sPrompt = localStorage.getItem('prontuario_systemPrompt') || DEFAULT_SYSTEM_PROMPT;
+          await localforage.setItem('prontuario_systemPrompt', sPrompt);
+        }
+        if (mounted) setSystemPrompt(sPrompt);
+
+        let gPrompt = await localforage.getItem<string>('prontuario_globalSystemPrompt');
+        if (!gPrompt) {
+          gPrompt = localStorage.getItem('prontuario_globalSystemPrompt') || DEFAULT_GLOBAL_PROMPT;
+          await localforage.setItem('prontuario_globalSystemPrompt', gPrompt);
+        }
+        if (mounted) setGlobalSystemPrompt(gPrompt);
+
+        let cPrompt = await localforage.getItem<string>('prontuario_complaintPrompt');
+        if (!cPrompt) {
+          cPrompt = localStorage.getItem('prontuario_complaintPrompt') || DEFAULT_COMPLAINT_PROMPT;
+          await localforage.setItem('prontuario_complaintPrompt', cPrompt);
+        }
+        if (mounted) setComplaintPrompt(cPrompt);
+
+        let pPrompt = await localforage.getItem<string>('prontuario_planPrompt');
+        if (!pPrompt) {
+          pPrompt = localStorage.getItem('prontuario_planPrompt') || DEFAULT_PLAN_PROMPT;
+          await localforage.setItem('prontuario_planPrompt', pPrompt);
+        }
+        if (mounted) setPlanPrompt(pPrompt);
+
+        let pName = await localforage.getItem<string>('prontuario_psychologistName');
+        if (pName == null) {
+          pName = localStorage.getItem('prontuario_psychologistName') || '';
+          await localforage.setItem('prontuario_psychologistName', pName);
+        }
+        if (mounted) setPsychologistName(pName);
+
+        let stamp = await localforage.getItem<string>('prontuario_stampImage');
+        if (!stamp) {
+          stamp = localStorage.getItem('prontuario_stampImage');
+          if (stamp) await localforage.setItem('prontuario_stampImage', stamp);
+        }
+        if (mounted && stamp) setStampImage(stamp);
+
+      } catch (err) {
+        console.error("Error loading from localforage:", err);
+      } finally {
+        if (mounted) setIsLoaded(true);
+      }
+    };
+    loadData();
+    return () => { mounted = false; };
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('prontuario_sessions', JSON.stringify(sessions));
-  }, [sessions]);
+    if (isLoaded) localforage.setItem('prontuario_patients', patients);
+  }, [patients, isLoaded]);
 
   useEffect(() => {
-    localStorage.setItem('prontuario_systemPrompt', systemPrompt);
-  }, [systemPrompt]);
+    if (isLoaded) localforage.setItem('prontuario_sessions', sessions);
+  }, [sessions, isLoaded]);
 
   useEffect(() => {
-    localStorage.setItem('prontuario_globalSystemPrompt', globalSystemPrompt);
-  }, [globalSystemPrompt]);
+    if (isLoaded) localforage.setItem('prontuario_systemPrompt', systemPrompt);
+  }, [systemPrompt, isLoaded]);
 
   useEffect(() => {
-    localStorage.setItem('prontuario_complaintPrompt', complaintPrompt);
-  }, [complaintPrompt]);
+    if (isLoaded) localforage.setItem('prontuario_globalSystemPrompt', globalSystemPrompt);
+  }, [globalSystemPrompt, isLoaded]);
 
   useEffect(() => {
-    localStorage.setItem('prontuario_planPrompt', planPrompt);
-  }, [planPrompt]);
+    if (isLoaded) localforage.setItem('prontuario_complaintPrompt', complaintPrompt);
+  }, [complaintPrompt, isLoaded]);
 
   useEffect(() => {
-    localStorage.setItem('prontuario_psychologistName', psychologistName);
-  }, [psychologistName]);
+    if (isLoaded) localforage.setItem('prontuario_planPrompt', planPrompt);
+  }, [planPrompt, isLoaded]);
 
-  const updateSystemPrompt = (prompt: string) => {
-    setSystemPrompt(prompt);
-  };
+  useEffect(() => {
+    if (isLoaded) localforage.setItem('prontuario_psychologistName', psychologistName);
+  }, [psychologistName, isLoaded]);
 
-  const updateGlobalSystemPrompt = (prompt: string) => {
-    setGlobalSystemPrompt(prompt);
-  };
+  useEffect(() => {
+    if (isLoaded) {
+      if (stampImage) {
+        localforage.setItem('prontuario_stampImage', stampImage);
+      } else {
+        localforage.removeItem('prontuario_stampImage');
+      }
+    }
+  }, [stampImage, isLoaded]);
+
+  const updateSystemPrompt = (prompt: string) => setSystemPrompt(prompt);
+  const updateGlobalSystemPrompt = (prompt: string) => setGlobalSystemPrompt(prompt);
 
   const addPatient = (details: Partial<Patient> & { name: string }, initialTimestamps?: number[]) => {
     const newPatient: Patient = {
@@ -97,7 +157,7 @@ export function usePatients() {
       createdAt: Date.now(),
       ...details
     };
-    setPatients([...patients, newPatient]);
+    setPatients(p => [...p, newPatient]);
 
     if (initialTimestamps && initialTimestamps.length > 0) {
       const newSessions = initialTimestamps.map(timestamp => ({
@@ -138,7 +198,7 @@ export function usePatients() {
       clinicalText: '',
       status: 'draft',
     };
-    setSessions([...sessions, newSession]);
+    setSessions(current => [...current, newSession]);
   };
 
   const addMultipleSessions = (patientId: string, timestamps: number[]) => {
@@ -150,7 +210,7 @@ export function usePatients() {
       clinicalText: '',
       status: 'draft',
     }));
-    setSessions([...sessions, ...newSessions]);
+    setSessions(current => [...current, ...newSessions]);
   };
 
   const updateSession = (sessionId: string, updates: Partial<Session>) => {
@@ -188,19 +248,8 @@ export function usePatients() {
     );
   };
 
-  const [stampImage, setStampImage] = useState<string | null>(() => {
-    return localStorage.getItem('prontuario_stampImage') || null;
-  });
-
-  useEffect(() => {
-    if (stampImage) {
-      localStorage.setItem('prontuario_stampImage', stampImage);
-    } else {
-      localStorage.removeItem('prontuario_stampImage');
-    }
-  }, [stampImage]);
-
   return {
+    isLoaded,
     patients,
     addPatient,
     updatePatient,

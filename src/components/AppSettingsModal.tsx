@@ -1,21 +1,55 @@
-import React, { useState } from 'react';
-import { Settings, X, Key, ShieldAlert } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Settings, X, Key, ShieldAlert, Loader2 } from 'lucide-react';
+import localforage from 'localforage';
 
 interface AppSettingsModalProps {
   onClose: () => void;
 }
 
 export function AppSettingsModal({ onClose }: AppSettingsModalProps) {
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('prontuario_geminiApiKey') || '');
+  const [apiKey, setApiKey] = useState('');
   const [saved, setSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleSave = () => {
-    localStorage.setItem('prontuario_geminiApiKey', apiKey.trim());
+  useEffect(() => {
+    let mounted = true;
+    const fetchKey = async () => {
+      try {
+        let key = await localforage.getItem<string>('prontuario_geminiApiKey');
+        if (key == null) {
+           key = localStorage.getItem('prontuario_geminiApiKey') || '';
+           if (key) {
+             await localforage.setItem('prontuario_geminiApiKey', key);
+           }
+        }
+        if (mounted) setApiKey(key);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+    fetchKey();
+    return () => { mounted = false; };
+  }, []);
+
+  const handleSave = async () => {
+    await localforage.setItem('prontuario_geminiApiKey', apiKey.trim());
     setSaved(true);
     setTimeout(() => {
       onClose();
     }, 1500);
   };
+
+  if (isLoading) {
+    return (
+      <div className="absolute inset-0 bg-black/40 z-50 flex items-center justify-center p-4 print:hidden backdrop-blur-sm">
+        <div className="bg-nt-paper w-full max-w-md rounded-2xl shadow-2xl border border-nt-border overflow-hidden flex items-center justify-center p-12">
+          <Loader2 className="w-8 h-8 animate-spin text-nt-primary" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="absolute inset-0 bg-black/40 z-50 flex items-center justify-center p-4 print:hidden backdrop-blur-sm">
@@ -35,7 +69,7 @@ export function AppSettingsModal({ onClose }: AppSettingsModalProps) {
               <Key className="w-4 h-4" /> Gemini API Key
             </label>
             <p className="text-xs text-gray-500 mb-2">
-              Insira sua chave da API do Google Gemini. A chave é salva apenas no seu navegador (localStorage) para sua privacidade.
+              Insira sua chave da API do Google Gemini. A chave é salva apenas no seu navegador para sua privacidade.
             </p>
             <input 
               type="password"

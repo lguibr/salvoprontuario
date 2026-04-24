@@ -1,11 +1,13 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { Session, Patient, ChatMessage } from '../types';
+import localforage from 'localforage';
 
 let ai: GoogleGenAI | null = null;
 let cachedKey: string | null = null;
 
-export function getGemini() {
-  const key = localStorage.getItem('prontuario_geminiApiKey') || import.meta.env?.VITE_GEMINI_API_KEY || '';
+export async function getGemini() {
+  const keyLocal = await localforage.getItem<string>('prontuario_geminiApiKey');
+  const key = keyLocal || import.meta.env?.VITE_GEMINI_API_KEY || '';
   
   if (!key) {
     throw new Error('Chave da API do Google Gemini não encontrada. Configure-a nas suas configurações.');
@@ -20,7 +22,7 @@ export function getGemini() {
 }
 
 export async function elaborateClinicalNote(draft: string, systemPrompt: string): Promise<string> {
-  const ai = getGemini();
+  const ai = await getGemini();
   const prompt = `${systemPrompt}
 
 RASCUNHO DO PROFISSIONAL:
@@ -50,7 +52,7 @@ ${draft}`;
 }
 
 export async function refineSessionNote(session: Session, userMessage: string): Promise<{ reply: string, updatedNote: string }> {
-  const ai = getGemini();
+  const ai = await getGemini();
   
   const historyText = session.chatHistory?.map(m => `${m.role === 'user' ? 'Clínico' : 'IA'}: ${m.content}`).join('\n') || '';
   
@@ -93,7 +95,7 @@ Retorne um JSON com:
 }
 
 export async function elaboratePatientField(type: 'complaint' | 'plan', draft: string, customPrompt: string, sessions?: Session[], extraContext?: string): Promise<string> {
-  const ai = getGemini();
+  const ai = await getGemini();
   
   let context = '';
   if (type === 'plan') {
@@ -137,7 +139,7 @@ ${draft || 'Nenhum rascunho prévio fornecido.'}${context}`;
 }
 
 export async function refinePatientField(type: 'complaint' | 'plan', currentText: string, instruction: string, customPrompt: string, sessions?: Session[], extraContext?: string): Promise<string> {
-  const ai = getGemini();
+  const ai = await getGemini();
 
   let context = '';
   if (type === 'plan') {
@@ -192,7 +194,7 @@ Retorne APENAS o novo texto revisado, encapsulado em JSON.`;
 }
 
 export async function chatPatientRecord(patient: Patient, sessions: Session[], userMessage: string, globalSystemPromptStr?: string): Promise<{ reply: string, updatedSessions: { sessionId: string, newText: string }[] }> {
-  const ai = getGemini();
+  const ai = await getGemini();
   
   const validSessions = sessions.filter(s => s.clinicalText);
   const sessionsText = validSessions.map(s => `ID_SESSAO: ${s.id}\nData: ${new Date(s.datetime).toLocaleString()}\nEvolução Atual: ${s.clinicalText}`).join('\n\n---\n\n');
